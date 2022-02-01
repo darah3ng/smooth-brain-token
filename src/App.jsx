@@ -1,13 +1,11 @@
-import RoutePage from './Routes';
+import MainLayout from './components/layouts/Mainlayout';
+import Routes from './Routes';
 
 function App() {
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <RoutePage />
-      </header>
-    </div>
+    <MainLayout>
+      <Routes />
+    </MainLayout>
   );
 }
 
