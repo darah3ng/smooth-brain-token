@@ -1,6 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { useState } from 'react';
 import { ethers } from 'ethers';
+import { Box, Heading, Button, Grid, GridItem, Input, Link } from '@chakra-ui/react';
+import { ArrowLeftIcon } from '@chakra-ui/icons';
 import Token from '../../artifacts/contracts/Token.sol/Token.json';
 
 const tokenAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512';
@@ -36,17 +38,35 @@ function SBTokenPage() {
   }
 
   return (
-    <>
-      <h1>Smooth Brain Contract</h1>
-      <button onClick={getBalance}>Get balance</button>
-      <button onClick={sendCoins}>Send coins</button>
-      <input onChange={e => setUserAccount(e.target.value)} placeholder='Account ID' />
-      <input onChange={e => setAmount(e.target.value)} placeholder='Amount' />
+    <Box maxWidth={'500px'}>
+      <Heading>Smooth Brain Token</Heading>
 
-      <br /><br />
+      <Grid templateColumns='repeat(3, 1fr)' templateRows='repeat(2, 1fr)' gap={4} mt={5} mb={5}>
+        <GridItem rowSpan={2} colSpan={1} alignSelf={'center'}>
+          <Button colorScheme={'orange'} onClick={sendCoins}>Send coins</Button>
+        </GridItem>
 
-      <Link to='/'>Back</Link>
-    </>
+        <GridItem colSpan={2}>
+          <Input onChange={e => setUserAccount(e.target.value)} placeholder='Wallet address' />
+        </GridItem>
+
+        <GridItem colSpan={2}>
+          <Input onChange={e => setAmount(e.target.value)} placeholder='Send amount' />
+        </GridItem>
+
+        <GridItem colStart={3}>
+          <Button colorScheme={'green'} onClick={getBalance}>Your balance</Button>
+        </GridItem>
+      </Grid>
+
+      <Link
+        as={RouterLink}
+        textDecorationLine={'underline'}
+        to='/'
+      >
+        <ArrowLeftIcon /> Back
+      </Link>
+    </Box>
   );
 }
 

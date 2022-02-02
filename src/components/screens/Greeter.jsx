@@ -1,8 +1,10 @@
-import { Link, Input, Button, Text, Heading, Stack, Box } from '@chakra-ui/react';
+import { Link, Input, Button, Heading, Stack, Box, useToast } from '@chakra-ui/react';
+import { ArrowRightIcon } from '@chakra-ui/icons';
 import { Link as RouterLink } from "react-router-dom";
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import Greeter from '../../artifacts/contracts/Greeter.sol/Greeter.json';
+import BasicModal from '../ui/BasicModal';
 
 // this is from ropsten testnet
 const greeterAddress = '0x9443bEE8a6969DB5611F8460289fB56927b0075b';
@@ -12,6 +14,9 @@ const greeterAddress = '0x9443bEE8a6969DB5611F8460289fB56927b0075b';
 function GreeterPage() {
   const [greetingInput, setGreetingValueInput] = useState('');
   const [greeting, setGreetingValue] = useState('');
+  const [isInputError, setIsInputError] = useState(false);
+  const [isGreetingButtonLoading, setIsGreetingButtonLoading] = useState(false);
+  const toast = useToast();
 
   async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -24,8 +29,11 @@ function GreeterPage() {
       const contract = new ethers.Contract(greeterAddress, Greeter.abi, provider); // create an instance of the contract
 
       try {
+        setIsGreetingButtonLoading(true);
         const data = await contract.greet();
+        setIsGreetingButtonLoading(false);
         setGreetingValue(data);
+
         console.log('data: ', data);
       }
       catch (err) {
@@ -36,10 +44,12 @@ function GreeterPage() {
 
   async function setGreeting() {
     if (!greetingInput) {
+      setIsInputError(true);
       return;
     }
 
     if (typeof window.ethereum !== 'undefined') {
+      setIsInputError(false);
       await requestAccount(); // wait for the users to connect to their wallet
 
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -47,20 +57,29 @@ function GreeterPage() {
       const contract = new ethers.Contract(greeterAddress, Greeter.abi, signer); // create an instance of the contract with a signer
       const transaction = await contract.setGreeting(greetingInput);
 
-      setGreetingValueInput('');
-
+      setIsGreetingButtonLoading(true);
       await transaction.wait(); // waiting for transaction to be confirmed
+      setIsGreetingButtonLoading(false);
+
+      setGreetingValue('');
+
+      toast({
+        status: 'success',
+        duration: 9000,
+        position: 'top',
+        isClosable: true,
+      })
 
       fetchGreeting();
     }
   }
 
   return (
-    <Box>
+    <Box maxWidth={'500px'}>
       <Heading>Greeter Contract</Heading>
-      <Stack alignContent={'flex-start'} mt={5}>
+      <Stack alignContent={'flex-start'} mt={5} mb={5}>
         <Stack direction={'row'}>
-          <Button colorScheme='teal' maxWidth={'200px'} onClick={setGreeting}>Set Greeting</Button>
+          <Button colorScheme='teal' maxWidth={'200px'} onClick={setGreeting} isLoading={isGreetingButtonLoading}>Set Greeting</Button>
           <Input
             shadow={'md'}
             onChange={e => setGreetingValueInput(e.target.value)}
@@ -68,18 +87,25 @@ function GreeterPage() {
             value={greetingInput}
             size={'md'}
             maxWidth={'200px'}
+            isRequired
+            isInvalid={isInputError}
           />
         </Stack>
 
-        <Stack direction={'row'}>
-          <Button colorScheme='teal' maxWidth={'150px'} onClick={fetchGreeting}>Fetch Greeting</Button>
-          <Text alignSelf={'center'}>{greeting}</Text>
-        </Stack>
+        <BasicModal
+          fetchGreeting={fetchGreeting}
+          greeting={greeting}
+          isButtonLoading={isGreetingButtonLoading} 
+        />
       </Stack>
 
-      <br /><br />
-
-      <Link as={RouterLink} textDecorationLine={'underline'} to='/sbtoken'>Smooth Brain Token</Link>
+      <Link
+        as={RouterLink}
+        textDecorationLine={'underline'}
+        to='/sbtoken'
+      >
+        <ArrowRightIcon /> Smooth Brain Token
+      </Link>
     </Box>
   );
 }

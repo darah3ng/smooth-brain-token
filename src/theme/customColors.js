@@ -86,17 +86,6 @@ const customColors = {
       heading: '#102a43',
       icon: '#9FB3C8',
       link: '#9F00FF',
-      career: {
-        tagBG: '#f7fafc',
-        text: '#1a202c',
-        subtext: '#2d3748',
-        logoBG: '#f0f8ff'
-      },
-      skills: {
-        color: '#4299E1',
-        border: '#4299E1',
-        bg: '#d7e8f3'
-      }
     },
     dark: {
       logo: '#ffffff',
@@ -110,17 +99,6 @@ const customColors = {
       heading: '#fff',
       icon: '#486581',
       link: '#F8CCFF',
-      career: {
-        tagBG: 'rgba(237, 242, 247, 0.16)',
-        text: '#fff',
-        subtext: '#fff',
-        logoBG: '#f0f8ff'
-      },
-      skills: {
-        color: '#fff',
-        border: '#4299E1',
-        bg: '#427a9e'
-      }
     }
   }
 };

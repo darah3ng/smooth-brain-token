@@ -6,20 +6,41 @@ import "hardhat/console.sol";
 contract Token {
   string public name = "Smooth Brain Token";
   string public symbol = "SBT";
-  uint public totalSupply = 1000000;
+  uint public totalSupply = 10000000; // 10 millions
+  address public owner;
+
   mapping(address => uint) balances;
+  mapping(address => bool) alreadyReceivedTenTokenAddresses;
 
   constructor() {
     balances[msg.sender] = totalSupply;
+    owner = msg.sender;
   }
 
-  function transfer(address to, uint amount) external {
-    require(balances[msg.sender] >= amount, "Not enough tokens");
-    balances[msg.sender] -= amount;
-    balances[to] += amount;
+  function transfer(address _to, uint _amount) external {
+    require(balances[msg.sender] >= _amount, "Not enough tokens");
+    balances[msg.sender] -= _amount;
+    balances[_to] += _amount;
   }
   
-  function balanceOf(address account) external view returns (uint) {
-    return balances[account];
+  function balanceOf(address _account) external view returns (uint) {
+    return balances[_account];
+  }
+
+  function getOwnerBalance() external view returns (uint256) {
+    return balances[owner];
+  }
+
+  function giveMeTenTokens() external {
+    require(balances[owner] >= 10, "Not enough tokens");
+    require(alreadyReceivedTenTokenAddresses[msg.sender] == false, "Can only receive 10 per wallet.");
+
+    balances[owner] -= 10;
+    balances[msg.sender] += 10;
+    alreadyReceivedTenTokenAddresses[msg.sender] = true;
+  }
+
+  function checkWallet(address _account) external view returns (bool) {
+      return alreadyReceivedTenTokenAddresses[_account];
   }
 }
