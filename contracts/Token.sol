@@ -6,7 +6,7 @@ import "hardhat/console.sol";
 contract Token {
   string public name = "Smooth Brain Token";
   string public symbol = "SBT";
-  uint public totalSupply = 10000000; // 10 millions
+  uint public totalSupply = 10000000 * (10 ** 18); // 10 millions
   address public owner;
 
   mapping(address => uint) balances;
@@ -33,14 +33,14 @@ contract Token {
 
   function giveMeTenTokens() external {
     require(balances[owner] >= 10, "Not enough tokens");
-    require(alreadyReceivedTenTokenAddresses[msg.sender] == false, "Can only receive 10 per wallet.");
+    require(alreadyReceivedTenTokenAddresses[msg.sender] == false, "Can only do this once.");
 
     balances[owner] -= 10;
     balances[msg.sender] += 10;
     alreadyReceivedTenTokenAddresses[msg.sender] = true;
   }
 
-  function checkWallet(address _account) external view returns (bool) {
+  function checkWalletStatus(address _account) external view returns (bool) {
       return alreadyReceivedTenTokenAddresses[_account];
   }
 }
