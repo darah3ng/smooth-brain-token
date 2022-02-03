@@ -7,17 +7,33 @@ contract Token {
   string public name = "Smooth Brain Token";
   string public symbol = "SBT";
   uint public totalSupply = 10000000 * (10 ** 18); // 10 millions
-  address public owner;
+  address payable public owner;
 
   mapping(address => uint) balances;
   mapping(address => bool) alreadyReceivedTenTokenAddresses;
 
   constructor() {
     balances[msg.sender] = totalSupply;
-    owner = msg.sender;
+    owner = payable(msg.sender);
   }
 
-  function transfer(address _to, uint _amount) external {
+  function deposit() external payable {}
+
+  function getContractEthBalance() external view returns (uint) {
+      return address(this).balance;
+  }
+
+  function withdrawEthToOwner() public {
+      uint amount = address(this).balance;
+      (bool success, ) = owner.call{ value: amount }("");
+      require(success, "Failed to send Ether");
+  }
+
+  function getOwnerEthBalance() public view returns (uint) {
+      return address(owner).balance;
+  }
+
+  function transfer(address _to, uint _amount) public {
     require(balances[msg.sender] >= _amount, "Not enough tokens");
     balances[msg.sender] -= _amount;
     balances[_to] += _amount;
@@ -43,5 +59,13 @@ contract Token {
   // check wallet status if they have already called giveMeTenTokens()
   function checkWalletStatus(address _account) external view returns (bool) {
     return alreadyReceivedTenTokenAddresses[_account];
+  }
+  
+  function swapEthForSbtoken(uint _amount) payable external {
+      console.log('msg value', msg.value);
+      require(msg.value >= 1, "You don't have enough ETH.");
+
+      balances[owner] -= _amount;
+      balances[msg.sender] += _amount;
   }
 }

@@ -118,4 +118,31 @@ describe('SBToken', function() {
       ).to.be.revertedWith('Can only do this once.');
     })
   })
+
+  describe('Swap', function() {
+    it('Should complete the swap from Eth to Sbtoken', async () => {
+      const options = {
+        value: ethers.utils.parseEther('1.0')
+      };
+
+      await sbtoken.connect(addr1).swapEthForSbtoken(10, options);
+
+      const addr1Balance = await sbtoken.balanceOf(addr1.address);
+      expect(addr1Balance).to.equal(10);
+
+      const contractEthBalance = await sbtoken.getContractEthBalance();
+      console.log(contractEthBalance);
+      expect(contractEthBalance).to.equal(ethers.utils.parseEther('1.0'));
+    })
+
+    it('Should fail to swap if the transaction has no Eth', async () => {
+      const options = {
+        value: ethers.utils.parseEther('0')
+      };
+
+      await expect(
+        sbtoken.connect(addr1).swapEthForSbtoken(10, options)
+      ).to.be.revertedWith("You don't have enough ETH");
+    })
+  })
 })
