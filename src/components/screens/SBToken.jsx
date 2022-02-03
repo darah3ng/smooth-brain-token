@@ -1,8 +1,8 @@
 import { Link as RouterLink } from "react-router-dom";
 import { useState } from 'react';
 import { ethers } from 'ethers';
-import { Box, Heading, Button, Grid, GridItem, Input, Link } from '@chakra-ui/react';
-import { ArrowLeftIcon } from '@chakra-ui/icons';
+import { Box, Heading, Button, Grid, GridItem, Input, Link, Divider, Text, InputGroup, InputRightElement  } from '@chakra-ui/react';
+import { ArrowLeftIcon, TriangleDownIcon } from '@chakra-ui/icons';
 import Token from '../../artifacts/contracts/Token.sol/Token.json';
 
 const tokenAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512';
@@ -10,6 +10,7 @@ const tokenAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512';
 function SBTokenPage() {
   const [userAccount, setUserAccount] = useState('');
   const [amount, setAmount] = useState(0);
+  const [ethInput, setEthInput] = useState(0);
 
   async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -37,11 +38,59 @@ function SBTokenPage() {
     }
   }
 
+  async function swapCoins() {
+    if (typeof window.ethereum !== 'undefined') {
+      await requestAccount();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
+
+      const options = {
+        value: ethers.utils.parseEther(ethInput.toString())
+      };
+      const covertEthToSbt = ethInput * 1000;
+      const transaction = await contract.swapEthForSbtoken(covertEthToSbt, options);
+      await transaction.wait();
+
+      console.log(`${ethInput} Eth successfully swap to ${covertEthToSbt} Sbt`);
+    }
+  }
+
   return (
     <Box maxWidth={'500px'}>
-      <Heading>Smooth Brain Token</Heading>
+      <Heading bgGradient={'linear(to-r, #c2e59c, #64b3f4)'} bgClip='text'>Smooth Brain Token</Heading>
 
-      <Grid templateColumns='repeat(3, 1fr)' templateRows='repeat(2, 1fr)' gap={4} mt={5} mb={5}>
+      <Divider mt={5} />
+
+      <Heading size={'md'} mt={5}>Swap</Heading>
+      <Grid templateColumns='repeat(3, 1fr)' templateRows='repeat(2, 1fr)' gap={4} mt={3} mb={5}>
+        <GridItem colSpan={3}>
+          <InputGroup>
+            <Input onChange={(e) => setEthInput(e.target.value)} value={ethInput} placeholder='ETH' />
+            <InputRightElement children={<Text mr={5}>ETH</Text>} />
+          </InputGroup>
+        </GridItem>
+
+        <GridItem colStart={2} placeSelf={'center'}>
+          <TriangleDownIcon w={6} h={6} />
+        </GridItem>
+
+        <GridItem colSpan={3}>
+          <InputGroup>
+            <Input value={ethInput * 1000} isReadOnly placeholder='SBT' />
+            <InputRightElement children={<Text mr={5}>SBT</Text>} />
+          </InputGroup>
+        </GridItem>
+
+        <GridItem colStart={2}>
+          <Button colorScheme={'green'} width={'100%'} onClick={swapCoins}>Swap</Button>
+        </GridItem>
+      </Grid>
+
+      <Divider mt={5} />
+      
+      <Heading size={'md'} mt={5}>Send to others</Heading>
+      <Grid templateColumns='repeat(3, 1fr)' templateRows='repeat(2, 1fr)' gap={4} mt={3} mb={5}>
         <GridItem rowSpan={2} colSpan={1} alignSelf={'center'}>
           <Button colorScheme={'orange'} onClick={sendCoins}>Send coins</Button>
         </GridItem>
