@@ -40,7 +40,8 @@ contract Token {
     alreadyReceivedTenTokenAddresses[msg.sender] = true;
   }
 
+  // check wallet status if they have already called giveMeTenTokens()
   function checkWalletStatus(address _account) external view returns (bool) {
-      return alreadyReceivedTenTokenAddresses[_account];
+    return alreadyReceivedTenTokenAddresses[_account];
   }
 }
