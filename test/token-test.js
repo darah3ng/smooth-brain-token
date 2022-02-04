@@ -1,5 +1,6 @@
-const { expect, assert } = require('chai');
+const { expect, assert} = require('chai');
 const { ethers } = require('hardhat');
+
 
 describe('Greeter', function () {
   it('Should return the new greeting once it is changed', async function () {
@@ -66,11 +67,11 @@ describe('SBToken', function() {
     it('Should transfer tokens from owner to other accounts', async () => {
       await sbtoken.transfer(addr1.address, 10);
       const addr1Balance = await sbtoken.balanceOf(addr1.address);
-      expect(addr1Balance).to.equal(10);
+      expect(addr1Balance).to.equal(ethers.utils.parseEther('10'));
 
       sbtoken.transfer(addr2.address, 20);
       const addr2Balance = await sbtoken.balanceOf(addr2.address);
-      expect(addr2Balance).to.equal(20);
+      expect(addr2Balance).to.equal(ethers.utils.parseEther('20'));
     })
 
     it('Should transfer between accounts', async () => {
@@ -78,7 +79,7 @@ describe('SBToken', function() {
       // We use .connect(signer) to send a transaction from another account
       await sbtoken.connect(addr1).transfer(addr2.address, 5);
       const addr2Balance = await sbtoken.balanceOf(addr2.address);
-      expect(addr2Balance).to.equal(5);
+      expect(addr2Balance).to.equal(ethers.utils.parseEther('5'));
     })
 
     it("Should fail if sender doesn't have enough tokens", async () => {
@@ -98,20 +99,22 @@ describe('SBToken', function() {
       await sbtoken.transfer(addr2.address, 50);
 
       const finalOwnerBalance = await sbtoken.balanceOf(owner.address);
-      expect(finalOwnerBalance).to.equal(initialOwnerBalance.sub(100));
+      const actualValue = finalOwnerBalance * 1; // workaround to convert it to number
+      const expectedValue = initialOwnerBalance - (100 * (10 ** 18));
+      expect(actualValue).to.equal(expectedValue);
 
       const addr1Balance = await sbtoken.balanceOf(addr1.address);
-      expect(addr1Balance).to.equal(50);
+      expect(addr1Balance).to.equal(ethers.utils.parseEther('50'));
 
       const addr2Balance = await sbtoken.balanceOf(addr2.address);
-      expect(addr2Balance).to.equal(50);
+      expect(addr2Balance).to.equal(ethers.utils.parseEther('50'));
     })
 
     it("Should only give each wallet 10 tokens once", async () => {
       await sbtoken.connect(addr1).giveMeTenTokens();
 
       const addr1Balance = await sbtoken.balanceOf(addr1.address);
-      expect(addr1Balance).to.equal(10);
+      expect(addr1Balance).to.equal(ethers.utils.parseEther('10'));
 
       await expect(
         sbtoken.connect(addr1).giveMeTenTokens()
@@ -128,10 +131,9 @@ describe('SBToken', function() {
       await sbtoken.connect(addr1).swapEthForSbtoken(10, options);
 
       const addr1Balance = await sbtoken.balanceOf(addr1.address);
-      expect(addr1Balance).to.equal(10);
+      expect(addr1Balance).to.equal(ethers.utils.parseEther('10'));
 
       const contractEthBalance = await sbtoken.getContractEthBalance();
-      console.log(contractEthBalance);
       expect(contractEthBalance).to.equal(ethers.utils.parseEther('1.0'));
     })
 
