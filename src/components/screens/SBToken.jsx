@@ -1,17 +1,16 @@
-import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import {
-  Box, Heading, Button, Grid, GridItem, Link, Divider, Text,
+  Box, Heading, Button, Grid, GridItem, Divider, Text,
   Input, InputGroup, InputRightElement,
   useToast, useDisclosure
 } from '@chakra-ui/react';
-import { ArrowLeftIcon, TriangleDownIcon } from '@chakra-ui/icons';
+import { TriangleDownIcon } from '@chakra-ui/icons';
 import Token from '../../artifacts/contracts/Token.sol/Token.json';
 import BasicModal from '../ui/BasicModal';
 import { addTokenToMetaMask } from '../../utils/addTokenToMetaMask';
 
-const tokenAddress = '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318';
+const tokenAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 function SBTokenPage() {
   const [userAccount, setUserAccount] = useState('');

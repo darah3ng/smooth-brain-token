@@ -12,6 +12,11 @@ contract Token {
   mapping(address => uint) balances;
   mapping(address => bool) alreadyReceivedTenTokenAddresses;
 
+  event Transfer(address _to, uint _amount);
+  event RetrieveTenTokens(address _to);
+  event Swap(address _sender, uint _amount);
+  event WithdrawalEthToOwner(uint _amount);
+
   constructor() {
     balances[msg.sender] = totalSupply;
     owner = payable(msg.sender);
@@ -48,6 +53,9 @@ contract Token {
   function withdrawEthToOwner() public {
     uint amount = address(this).balance;
     (bool success, ) = owner.call{ value: amount }("");
+
+    emit WithdrawalEthToOwner(amount);
+
     require(success, "Failed to send Ether");
   }
 
@@ -55,6 +63,8 @@ contract Token {
     require(balances[msg.sender] >= _amount, "Not enough tokens");
     balances[msg.sender] -= _amount;
     balances[_to] += _amount;
+
+    emit Transfer(_to, _amount);
   }
 
   function giveMeTenTokens() external {
@@ -64,6 +74,8 @@ contract Token {
     balances[owner] -= wrapEighteenDecimal(10);
     balances[msg.sender] += wrapEighteenDecimal(10);
     alreadyReceivedTenTokenAddresses[msg.sender] = true;
+
+    emit RetrieveTenTokens(msg.sender);
   }
   
   function swapEthForSbtoken(uint _amount) payable external {
@@ -71,5 +83,7 @@ contract Token {
 
     balances[owner] -= wrapEighteenDecimal(_amount);
     balances[msg.sender] += wrapEighteenDecimal(_amount);
+
+    emit Swap(msg.sender, _amount);
   }
 }
