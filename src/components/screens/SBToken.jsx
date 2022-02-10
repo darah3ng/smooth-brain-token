@@ -153,14 +153,6 @@ function SBTokenPage() {
       <BasicModal isOpen={isOpen} onClose={onClose}>
         {tokenBalance.toString()}
       </BasicModal>
-
-      <Link
-        as={RouterLink}
-        textDecorationLine={'underline'}
-        to='/'
-      >
-        <ArrowLeftIcon /> Back
-      </Link>
     </Box>
   );
 }
