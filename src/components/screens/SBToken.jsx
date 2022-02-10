@@ -1,9 +1,14 @@
 import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
 import { ethers } from 'ethers';
-import { Box, Heading, Button, Grid, GridItem, Input, Link, Divider, Text, InputGroup, InputRightElement, useToast } from '@chakra-ui/react';
+import {
+  Box, Heading, Button, Grid, GridItem, Link, Divider, Text,
+  Input, InputGroup, InputRightElement,
+  useToast, useDisclosure
+} from '@chakra-ui/react';
 import { ArrowLeftIcon, TriangleDownIcon } from '@chakra-ui/icons';
 import Token from '../../artifacts/contracts/Token.sol/Token.json';
+import BasicModal from '../ui/BasicModal';
 import { addTokenToMetaMask } from '../../utils/addTokenToMetaMask';
 
 const tokenAddress = '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318';
@@ -12,7 +17,10 @@ function SBTokenPage() {
   const [userAccount, setUserAccount] = useState('');
   const [amount, setAmount] = useState(0);
   const [ethInput, setEthInput] = useState(0);
+  const [tokenBalance, setTokenBalance] = useState('');
+
   const toast = useToast();
+  const { onOpen, isOpen, onClose } = useDisclosure();
 
   function viewToast() {
     return toast({
@@ -37,7 +45,8 @@ function SBTokenPage() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contract = new ethers.Contract(tokenAddress, Token.abi, provider);
       const balance = await contract.balanceOf(account);
-      console.log('Balance: ', balance.toString());
+      const readableBalance = ethers.utils.formatEther(balance.toString());
+      setTokenBalance(readableBalance);
     }
   }
 
@@ -117,7 +126,15 @@ function SBTokenPage() {
       <Heading size={'md'} mt={5}>Send to others</Heading>
       <Grid templateColumns='repeat(3, 1fr)' templateRows='repeat(2, 1fr)' gap={4} mt={3} mb={5}>
         <GridItem rowSpan={2} colSpan={1} alignSelf={'center'}>
-          <Button colorScheme={'orange'} onClick={sendCoins}>Send coins</Button>
+          <Button
+            colorScheme={'green'}
+            onClick={() => {
+              getBalance();
+              onOpen();
+            }}
+          >
+            Your balance
+          </Button>
         </GridItem>
 
         <GridItem colSpan={2}>
@@ -129,9 +146,13 @@ function SBTokenPage() {
         </GridItem>
 
         <GridItem colStart={3}>
-          <Button colorScheme={'green'} onClick={getBalance}>Your balance</Button>
+          <Button colorScheme={'orange'} onClick={sendCoins}>Send coins</Button>
         </GridItem>
       </Grid>
+
+      <BasicModal isOpen={isOpen} onClose={onClose}>
+        {tokenBalance.toString()}
+      </BasicModal>
 
       <Link
         as={RouterLink}

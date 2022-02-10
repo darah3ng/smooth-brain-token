@@ -6,45 +6,30 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure,
   Button
 } from '@chakra-ui/react';
 
-function BasicModal({ greeting, fetchGreeting, isButtonLoading }) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
+function BasicModal({ isOpen, onClose, children }) {
   return (
     <>
-      <Button
-        isLoading={isButtonLoading}
-        onClick={() => {
-          fetchGreeting();
-          onOpen();
-        }}
-        colorScheme={'orange'}
-        color={'white'}
-        fontWeight={'bold'}
-      >
-        Fetch Greeting
-      </Button>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>SBT balance</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {children}
+          </ModalBody>
 
-      {!isButtonLoading && (
-        <Modal onClose={onClose} isOpen={isOpen}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>The last person said:</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              {greeting}
-            </ModalBody>
-            <ModalFooter>
-              <Button onClick={onClose}>Close</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      )}
+          <ModalFooter>
+            <Button colorScheme='blue' onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
-  )
-};
+  );
+}
 
 export default BasicModal;

@@ -1,10 +1,10 @@
 import { Link, Input, Button, Heading, Stack, Box, useToast } from '@chakra-ui/react';
 import { ArrowRightIcon } from '@chakra-ui/icons';
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import Greeter from '../../artifacts/contracts/Greeter.sol/Greeter.json';
-import BasicModal from '../ui/BasicModal';
+import GreetingModal from '../ui/GreetingModal';
 
 // this is from ropsten testnet
 const greeterAddress = '0x9443bEE8a6969DB5611F8460289fB56927b0075b';
@@ -35,8 +35,7 @@ function GreeterPage() {
         setGreetingValue(data);
 
         console.log('data: ', data);
-      }
-      catch (err) {
+      } catch (err) {
         console.log('Error: ', err);
       }
     }
@@ -67,8 +66,8 @@ function GreeterPage() {
         status: 'success',
         duration: 9000,
         position: 'top',
-        isClosable: true,
-      })
+        isClosable: true
+      });
 
       fetchGreeting();
     }
@@ -92,10 +91,10 @@ function GreeterPage() {
           />
         </Stack>
 
-        <BasicModal
+        <GreetingModal
           fetchGreeting={fetchGreeting}
           greeting={greeting}
-          isButtonLoading={isGreetingButtonLoading} 
+          isButtonLoading={isGreetingButtonLoading}
         />
       </Stack>
 

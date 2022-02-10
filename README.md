@@ -1,15 +1,34 @@
-# Basic Sample Hardhat Project
+# Smooth Brain Token (SBT)
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+A token that your wrinkle brain has been waiting for. 🧠
 
-Try running some of the following tasks:
+Total supply: 10 millions
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+Total users: 1 (me) 😛
+
+## Why
+
+Because the more you own, the more your wrickle brain will become smoother.
+
+## But really, WHY?
+
+Okay, I was kidding. I built this token to get a good understanding of the followings:
+- Create a token using Solidity
+- Use hardhat as a development enviroment
+- Create, test, and deploy smart contracts
+
+## How
+
+The app comes with a friendly/simple interface where you can:
+- Add the token to your MetaMask
+- Swap your ETH for SBT (one way ONLY)
+- Send your SBT to your friends
+
+## Tech stack
+
+- Frontend: React.js
+- Backend: Solidity
+- Smart contract interaction: Ethers.js
+- Wallet interaction: MetaMask
+- Dev enviroment: Hardhat
+- Theme: Chakra UI
