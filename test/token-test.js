@@ -66,11 +66,11 @@ describe('SBToken', function() {
     it('Should transfer tokens from owner to other accounts', async() => {
       await sbtoken.transfer(addr1.address, 10);
       const addr1Balance = await sbtoken.balanceOf(addr1.address);
-      expect(addr1Balance).to.equal(ethers.utils.parseEther('10'));
+      expect(addr1Balance).to.equal(10);
 
       sbtoken.transfer(addr2.address, 20);
       const addr2Balance = await sbtoken.balanceOf(addr2.address);
-      expect(addr2Balance).to.equal(ethers.utils.parseEther('20'));
+      expect(addr2Balance).to.equal(20);
     });
 
     it('Should transfer between accounts', async() => {
@@ -78,7 +78,7 @@ describe('SBToken', function() {
       // We use .connect(signer) to send a transaction from another account
       await sbtoken.connect(addr1).transfer(addr2.address, 5);
       const addr2Balance = await sbtoken.balanceOf(addr2.address);
-      expect(addr2Balance).to.equal(ethers.utils.parseEther('5'));
+      expect(addr2Balance).to.equal(5);
     });
 
     it("Should fail if sender doesn't have enough tokens", async() => {
@@ -92,21 +92,18 @@ describe('SBToken', function() {
     });
 
     it('Should update balances after transfers', async() => {
-      const initialOwnerBalance = await sbtoken.balanceOf(owner.address);
-
       await sbtoken.transfer(addr1.address, 50);
       await sbtoken.transfer(addr2.address, 50);
 
       const finalOwnerBalance = await sbtoken.balanceOf(owner.address);
-      const actualValue = finalOwnerBalance * 1; // workaround to convert it to number
-      const expectedValue = initialOwnerBalance - (100 * (10 ** 18));
-      expect(actualValue).to.equal(expectedValue);
+
+      expect(finalOwnerBalance.toString()).to.equal('9999999999999999999999900');
 
       const addr1Balance = await sbtoken.balanceOf(addr1.address);
-      expect(addr1Balance).to.equal(ethers.utils.parseEther('50'));
+      expect(addr1Balance).to.equal(50);
 
       const addr2Balance = await sbtoken.balanceOf(addr2.address);
-      expect(addr2Balance).to.equal(ethers.utils.parseEther('50'));
+      expect(addr2Balance).to.equal(50);
     });
 
     it('Should only give each wallet 10 tokens once', async() => {
