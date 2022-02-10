@@ -53,8 +53,8 @@ contract Token {
 
   function transfer(address _to, uint _amount) public {
     require(balances[msg.sender] >= _amount, "Not enough tokens");
-    balances[msg.sender] -= wrapEighteenDecimal(_amount);
-    balances[_to] += wrapEighteenDecimal(_amount);
+    balances[msg.sender] -= _amount;
+    balances[_to] += _amount;
   }
 
   function giveMeTenTokens() external {

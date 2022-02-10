@@ -1,9 +1,8 @@
-const { expect, assert} = require('chai');
+const { expect, assert } = require('chai');
 const { ethers } = require('hardhat');
 
-
-describe('Greeter', function () {
-  it('Should return the new greeting once it is changed', async function () {
+describe('Greeter', function() {
+  it('Should return the new greeting once it is changed', async function() {
     const Greeter = await ethers.getContractFactory('Greeter');
     const greeter = await Greeter.deploy('Hello, world!');
     await greeter.deployed();
@@ -26,34 +25,34 @@ describe('SBToken', function() {
   let addr1;
   let addr2;
 
-  beforeEach(async function () {
+  beforeEach(async function() {
     Token = await ethers.getContractFactory('Token');
     [owner, addr1, addr2] = await ethers.getSigners();
 
     sbtoken = await Token.deploy();
-  })
+  });
 
   describe('Deployment', function() {
-    it('Should have the correct owner', async () => {
+    it('Should have the correct owner', async() => {
       expect(await sbtoken.owner()).to.equal(owner.address);
-    })
+    });
 
-    it('Should assign the total supply of tokens to the owner', async () => {
+    it('Should assign the total supply of tokens to the owner', async() => {
       const sbtokenTotalSupply = await sbtoken.totalSupply();
       const ownerBalance = await sbtoken.balanceOf(owner.address);
       expect(sbtokenTotalSupply, ownerBalance);
-    })
+    });
 
-    it('Should equal the total supply of ten million tokens', async () => {
+    it('Should equal the total supply of ten million tokens', async() => {
       assert.equal(await sbtoken.totalSupply(), 10000000000000000000000000);
-    })
-  
+    });
+
     /*
 
     it('console log owner address and balance', async () => {
       // log the deployer wallet address
       console.log('owner wallet: ', await owner.address);
-  
+
       // log the the deployer wallet balance in eth
       let balance = await owner.getBalance();
       let formatBalance = ethers.utils.formatEther(balance);
@@ -61,10 +60,10 @@ describe('SBToken', function() {
     })
 
     */
-  })
+  });
 
   describe('Transactions', function() {
-    it('Should transfer tokens from owner to other accounts', async () => {
+    it('Should transfer tokens from owner to other accounts', async() => {
       await sbtoken.transfer(addr1.address, 10);
       const addr1Balance = await sbtoken.balanceOf(addr1.address);
       expect(addr1Balance).to.equal(ethers.utils.parseEther('10'));
@@ -72,17 +71,17 @@ describe('SBToken', function() {
       sbtoken.transfer(addr2.address, 20);
       const addr2Balance = await sbtoken.balanceOf(addr2.address);
       expect(addr2Balance).to.equal(ethers.utils.parseEther('20'));
-    })
+    });
 
-    it('Should transfer between accounts', async () => {
+    it('Should transfer between accounts', async() => {
       await sbtoken.transfer(addr1.address, 10);
       // We use .connect(signer) to send a transaction from another account
       await sbtoken.connect(addr1).transfer(addr2.address, 5);
       const addr2Balance = await sbtoken.balanceOf(addr2.address);
       expect(addr2Balance).to.equal(ethers.utils.parseEther('5'));
-    })
+    });
 
-    it("Should fail if sender doesn't have enough tokens", async () => {
+    it("Should fail if sender doesn't have enough tokens", async() => {
       const initialOwnerBalance = await sbtoken.balanceOf(owner.address);
 
       await expect(
@@ -90,9 +89,9 @@ describe('SBToken', function() {
       ).to.be.revertedWith('Not enough tokens');
 
       expect(await sbtoken.balanceOf(owner.address)).to.equal(initialOwnerBalance);
-    })
+    });
 
-    it("Should update balances after transfers", async () => {
+    it('Should update balances after transfers', async() => {
       const initialOwnerBalance = await sbtoken.balanceOf(owner.address);
 
       await sbtoken.transfer(addr1.address, 50);
@@ -108,9 +107,9 @@ describe('SBToken', function() {
 
       const addr2Balance = await sbtoken.balanceOf(addr2.address);
       expect(addr2Balance).to.equal(ethers.utils.parseEther('50'));
-    })
+    });
 
-    it("Should only give each wallet 10 tokens once", async () => {
+    it('Should only give each wallet 10 tokens once', async() => {
       await sbtoken.connect(addr1).giveMeTenTokens();
 
       const addr1Balance = await sbtoken.balanceOf(addr1.address);
@@ -119,11 +118,11 @@ describe('SBToken', function() {
       await expect(
         sbtoken.connect(addr1).giveMeTenTokens()
       ).to.be.revertedWith('Can only do this once.');
-    })
-  })
+    });
+  });
 
   describe('Swap', function() {
-    it('Should complete the swap from Eth to Sbtoken', async () => {
+    it('Should complete the swap from Eth to Sbtoken', async() => {
       const options = {
         value: ethers.utils.parseEther('1.0')
       };
@@ -135,9 +134,9 @@ describe('SBToken', function() {
 
       const contractEthBalance = await sbtoken.getContractEthBalance();
       expect(contractEthBalance).to.equal(ethers.utils.parseEther('1.0'));
-    })
+    });
 
-    it('Should fail to swap if the transaction has no Eth', async () => {
+    it('Should fail to swap if the transaction has no Eth', async() => {
       const options = {
         value: ethers.utils.parseEther('0')
       };
@@ -145,6 +144,6 @@ describe('SBToken', function() {
       await expect(
         sbtoken.connect(addr1).swapEthForSbtoken(10, options)
       ).to.be.revertedWith("You don't have enough ETH");
-    })
-  })
-})
+    });
+  });
+});

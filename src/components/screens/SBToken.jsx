@@ -1,16 +1,31 @@
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
 import { ethers } from 'ethers';
-import { Box, Heading, Button, Grid, GridItem, Input, Link, Divider, Text, InputGroup, InputRightElement  } from '@chakra-ui/react';
+import { Box, Heading, Button, Grid, GridItem, Input, Link, Divider, Text, InputGroup, InputRightElement, useToast } from '@chakra-ui/react';
 import { ArrowLeftIcon, TriangleDownIcon } from '@chakra-ui/icons';
 import Token from '../../artifacts/contracts/Token.sol/Token.json';
+import { addTokenToMetaMask } from '../../utils/addTokenToMetaMask';
 
-const tokenAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512';
+const tokenAddress = '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318';
 
 function SBTokenPage() {
   const [userAccount, setUserAccount] = useState('');
   const [amount, setAmount] = useState(0);
   const [ethInput, setEthInput] = useState(0);
+  const toast = useToast();
+
+  function viewToast() {
+    return toast({
+      duration: 3000,
+      position: 'bottom',
+      isClosable: true,
+      render: () => (
+        <Box width={'3xs'} color='white' p={3} bg='green.600' borderRadius={'md'} textAlign={'center'} mb={5}>
+            Success
+        </Box>
+      )
+    });
+  }
 
   async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -18,7 +33,7 @@ function SBTokenPage() {
 
   async function getBalance() {
     if (typeof window.ethereum !== 'undefined') {
-      const [ account ] = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const [account] = await window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contract = new ethers.Contract(tokenAddress, Token.abi, provider);
       const balance = await contract.balanceOf(account);
@@ -32,9 +47,15 @@ function SBTokenPage() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
-      const transaction = await contract.transfer(userAccount, amount);
+      const transaction = await contract.transfer(userAccount, ethers.utils.parseUnits(amount, 18));
+
       await transaction.wait();
-      console.log(`${amount} Coins successfully sent to ${userAccount}`);
+
+      const successMessage = `${amount} Coins successfully sent to ${userAccount}`;
+
+      viewToast();
+
+      console.log(successMessage);
     }
   }
 
@@ -53,12 +74,16 @@ function SBTokenPage() {
       await transaction.wait();
 
       console.log(`${ethInput} Eth successfully swap to ${covertEthToSbt} Sbt`);
+
+      viewToast();
     }
   }
 
   return (
     <Box maxWidth={'500px'}>
       <Heading bgGradient={'linear(to-r, #c2e59c, #64b3f4)'} bgClip='text'>Smooth Brain Token</Heading>
+
+      <Button colorScheme={'green'} size={'sm'} mt={5} onClick={() => addTokenToMetaMask(tokenAddress)}>Add token to MetaMask</Button>
 
       <Divider mt={5} />
 
@@ -88,7 +113,7 @@ function SBTokenPage() {
       </Grid>
 
       <Divider mt={5} />
-      
+
       <Heading size={'md'} mt={5}>Send to others</Heading>
       <Grid templateColumns='repeat(3, 1fr)' templateRows='repeat(2, 1fr)' gap={4} mt={3} mb={5}>
         <GridItem rowSpan={2} colSpan={1} alignSelf={'center'}>

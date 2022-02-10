@@ -85,7 +85,7 @@ const customColors = {
       subtext: '#334E68',
       heading: '#102a43',
       icon: '#9FB3C8',
-      link: '#9F00FF',
+      link: '#9F00FF'
     },
     dark: {
       logo: '#ffffff',
@@ -98,7 +98,7 @@ const customColors = {
       color: '#fff',
       heading: '#fff',
       icon: '#486581',
-      link: '#F8CCFF',
+      link: '#F8CCFF'
     }
   }
 };
