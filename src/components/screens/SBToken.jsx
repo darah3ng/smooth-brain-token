@@ -22,14 +22,14 @@ function SBTokenPage() {
   const toast = useToast();
   const { onOpen, isOpen, onClose } = useDisclosure();
 
-  function viewToast() {
+  function viewToast(isError = false) {
     return toast({
       duration: 3000,
       position: 'bottom',
       isClosable: true,
       render: () => (
-        <Box width={'3xs'} color='white' p={3} bg='green.600' borderRadius={'md'} textAlign={'center'} mb={5}>
-            Success
+        <Box width={'3xs'} color='white' p={3} bg={isError ? 'red.300' : 'green.600'} borderRadius={'md'} textAlign={'center'} mb={5}>
+            {isError ? 'Error' : 'Success'}
         </Box>
       )
     });
@@ -51,45 +51,53 @@ function SBTokenPage() {
   }
 
   async function sendCoins() {
-    if (typeof window.ethereum !== 'undefined') {
-      await requestAccount();
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
-      const transaction = await contract.transfer(userAccount, ethers.utils.parseUnits(amount, 18));
+    try {
+      if (typeof window.ethereum !== 'undefined') {
+        await requestAccount();
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
+        const transaction = await contract.transfer(userAccount, ethers.utils.parseUnits(amount, 18));
 
-      setIsLoading(true);
-      await transaction.wait();
-      setIsLoading(false);
+        setIsLoading(true);
+        await transaction.wait();
+        setIsLoading(false);
 
-      const successMessage = `${amount} Coins successfully sent to ${userAccount}`;
+        const successMessage = `${amount} Coins successfully sent to ${userAccount}`;
 
-      viewToast();
+        viewToast();
 
-      console.log(successMessage);
+        console.log(successMessage);
+      }
+    } catch (err) {
+      viewToast(true);
     }
   }
 
   async function swapCoins() {
-    if (typeof window.ethereum !== 'undefined') {
-      await requestAccount();
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
+    try {
+      if (typeof window.ethereum !== 'undefined') {
+        await requestAccount();
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
 
-      const options = {
-        value: ethers.utils.parseEther(ethInput.toString())
-      };
-      const covertEthToSbt = ethInput * 1000;
-      const transaction = await contract.swapEthForSbtoken(covertEthToSbt, options);
+        const options = {
+          value: ethers.utils.parseEther(ethInput.toString())
+        };
+        const covertEthToSbt = ethInput * 1000;
+        const transaction = await contract.swapEthForSbtoken(covertEthToSbt, options);
 
-      setIsLoading(true);
-      await transaction.wait();
-      setIsLoading(false);
+        setIsLoading(true);
+        await transaction.wait();
+        setIsLoading(false);
 
-      console.log(`${ethInput} Eth successfully swap to ${covertEthToSbt} Sbt`);
+        console.log(`${ethInput} Eth successfully swap to ${covertEthToSbt} Sbt`);
 
-      viewToast();
+        viewToast();
+      }
+    } catch (err) {
+      viewToast(true);
     }
   }
 
