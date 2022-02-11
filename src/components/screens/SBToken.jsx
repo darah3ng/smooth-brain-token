@@ -6,11 +6,10 @@ import {
   useToast, useDisclosure
 } from '@chakra-ui/react';
 import { TriangleDownIcon } from '@chakra-ui/icons';
-import Token from '../../artifacts/contracts/Token.sol/Token.json';
 import BasicModal from '../ui/BasicModal';
-import { addTokenToMetaMask } from '../../utils/addTokenToMetaMask';
 
-const tokenAddress = '0x966cad17b6f349a8cf885881295dfdf25a52adcf';
+import { TOKEN_ABI as Token, TOKEN_ADDRESS as tokenAddress } from '../../config';
+import { addTokenToMetaMask } from '../../utils/addTokenToMetaMask';
 
 function SBTokenPage() {
   const [userAccount, setUserAccount] = useState('');
