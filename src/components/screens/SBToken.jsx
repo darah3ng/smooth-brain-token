@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import {
-  Box, Heading, Button, Grid, GridItem, Divider, Text,
+  Box, Heading, Button, Grid, GridItem, Divider, Text, Flex,
+  Tag, TagLabel,
   Input, InputGroup, InputRightElement,
   useToast, useDisclosure
 } from '@chakra-ui/react';
@@ -87,10 +88,15 @@ function SBTokenPage() {
   }
 
   return (
-    <Box maxWidth={'500px'}>
-      <Heading bgGradient={'linear(to-r, #c2e59c, #64b3f4)'} bgClip='text'>Smooth Brain Token</Heading>
+    <Box maxWidth={'500px'} p={6} backgroundColor={'#274257'} borderRadius={'2xl'} boxShadow='lg'>
+      <Flex flexDirection={'column'} alignItems={'center'}>
+        <Heading bgGradient={'linear(to-r, #c2e59c, #64b3f4)'} bgClip='text'>Smooth Brain Token</Heading>
+        <Tag size='sm' colorScheme='teal' borderRadius='full' width={'30%'} justifyContent='center'>
+          <TagLabel>Ropsten Testnet</TagLabel>
+        </Tag>
+      </Flex>
 
-      <Button colorScheme={'green'} size={'sm'} mt={5} onClick={() => addTokenToMetaMask(tokenAddress)}>Add token to MetaMask</Button>
+      <Button colorScheme={'green'} size={'sm'} mt={6} onClick={() => addTokenToMetaMask(tokenAddress)}>Add token to MetaMask</Button>
 
       <Divider mt={5} />
 
