@@ -17,6 +17,7 @@ function SBTokenPage() {
   const [amount, setAmount] = useState(0);
   const [ethInput, setEthInput] = useState(0);
   const [tokenBalance, setTokenBalance] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const toast = useToast();
   const { onOpen, isOpen, onClose } = useDisclosure();
@@ -57,7 +58,9 @@ function SBTokenPage() {
       const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
       const transaction = await contract.transfer(userAccount, ethers.utils.parseUnits(amount, 18));
 
+      setIsLoading(true);
       await transaction.wait();
+      setIsLoading(false);
 
       const successMessage = `${amount} Coins successfully sent to ${userAccount}`;
 
@@ -79,7 +82,10 @@ function SBTokenPage() {
       };
       const covertEthToSbt = ethInput * 1000;
       const transaction = await contract.swapEthForSbtoken(covertEthToSbt, options);
+
+      setIsLoading(true);
       await transaction.wait();
+      setIsLoading(false);
 
       console.log(`${ethInput} Eth successfully swap to ${covertEthToSbt} Sbt`);
 
@@ -121,7 +127,7 @@ function SBTokenPage() {
         </GridItem>
 
         <GridItem colStart={2}>
-          <Button colorScheme={'green'} width={'100%'} onClick={swapCoins}>Swap</Button>
+          <Button colorScheme={'green'} width={'100%'} onClick={swapCoins} isLoading={isLoading}>Swap</Button>
         </GridItem>
       </Grid>
 
@@ -150,7 +156,7 @@ function SBTokenPage() {
         </GridItem>
 
         <GridItem colStart={3}>
-          <Button colorScheme={'orange'} onClick={sendCoins}>Send coins</Button>
+          <Button colorScheme={'orange'} onClick={sendCoins} isLoading={isLoading}>Send coins</Button>
         </GridItem>
       </Grid>
 
