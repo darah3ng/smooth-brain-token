@@ -10,7 +10,7 @@ import Token from '../../artifacts/contracts/Token.sol/Token.json';
 import BasicModal from '../ui/BasicModal';
 import { addTokenToMetaMask } from '../../utils/addTokenToMetaMask';
 
-const tokenAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+const tokenAddress = '0x966cad17b6f349a8cf885881295dfdf25a52adcf';
 
 function SBTokenPage() {
   const [userAccount, setUserAccount] = useState('');

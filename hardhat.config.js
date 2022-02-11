@@ -25,10 +25,14 @@ module.exports = {
   networks: {
     hardhat: {
       chainId: 1337
+    },
+    ropstenInfura: {
+      url: 'https://ropsten.infura.io/v3/a124ef7ed52642818e1c226cb45697bd',
+      accounts: [`0x${process.env.ACCOUNT_KEY}`]
+    },
+    ropstenAlchemy: {
+      url: 'https://eth-ropsten.alchemyapi.io/v2/YpKn1fYuGxyeBnPCfKqrI_FV-lMnRNnA',
+      accounts: [`0x${process.env.ACCOUNT_KEY}`]
     }
-    // ropsten: {
-    //   url: "https://ropsten.infura.io/v3/459cecc3cd0a4e99b434a363fa5ad753",
-    //   accounts: [`0x${process.env.ACCOUNT_KEY}`]
-    // }
   }
 };

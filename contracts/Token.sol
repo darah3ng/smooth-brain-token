@@ -1,12 +1,11 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.3;
 
-import "hardhat/console.sol";
-
 contract Token {
   string public name = "Smooth Brain Token";
   string public symbol = "SBT";
-  uint public totalSupply = 10000000 * (10 ** 18); // 10 millions
+  uint constant public decimal = 18;
+  uint public totalSupply = 10000000 * (10 ** decimal); // 10 millions
   address payable public owner;
 
   mapping(address => uint) balances;
@@ -29,7 +28,7 @@ contract Token {
   }
 
   function wrapEighteenDecimal(uint _amount) internal pure returns (uint256) {
-    return _amount * (10 ** 18);
+    return _amount * (10 ** decimal);
   }
 
   function getOwnerEthBalance() public view returns (uint) {
