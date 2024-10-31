@@ -12,6 +12,10 @@ Total users: 1 (me) 😛
   <image src="https://user-images.githubusercontent.com/12386682/153345440-2f44d78b-fcec-4e61-b577-7d421c6e133a.png" width="400px" />
 </p>
 
+## Warning ⚠️
+
+To point out the obvious, this repo is for learning purposes. It does not include common security checks, such as, `onlyOwner`, `ReentrancyGuard`, etc.
+
 ## Why
 
 Because the more you own, the more your wrickle brain will become smoother.
