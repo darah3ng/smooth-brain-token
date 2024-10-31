@@ -1,7 +1,5 @@
 # Smooth Brain Token (SBT)
 
-🔗 [`Live on Ropsten testnet`](https://ropsten.etherscan.io/address/0x966cad17b6f349a8cf885881295dfdf25a52adcf)
-
 A token that your wrinkle brain has been waiting for. 🧠
 
 Total supply: 10 millions
